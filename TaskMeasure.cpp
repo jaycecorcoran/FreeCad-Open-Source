@@ -72,7 +72,7 @@ TaskMeasure::TaskMeasure()
 
     QSettings settings;
     settings.beginGroup(QLatin1String(taskMeasureSettingsGroup));
-    delta = settings.value(QLatin1String(taskMeasureShowDeltaSettingsName), delta).toBool();
+    delta = settings.value(QLatin1String(taskMeasureShowDeltaSettingsName), true).toBool();
     mAutoSave = settings.value(QLatin1String(taskMeasureAutoSaveSettingsName), mAutoSave).toBool();
     if (settings.value(QLatin1String(taskMeasureGreedySelection), false).toBool()) {
         Gui::Selection().setSelectionStyle(SelectionStyle::GreedySelection);
@@ -80,6 +80,7 @@ TaskMeasure::TaskMeasure()
     else {
         Gui::Selection().setSelectionStyle(SelectionStyle::NormalSelection);
     }
+    settings.endGroup();
 
     showDelta = new QCheckBox();
     showDelta->setChecked(delta);
@@ -530,6 +531,8 @@ void TaskMeasure::showDeltaChanged(int checkState)
     QSettings settings;
     settings.beginGroup(QLatin1String(taskMeasureSettingsGroup));
     settings.setValue(QLatin1String(taskMeasureShowDeltaSettingsName), delta);
+    settings.endGroup();
+    settings.sync();
 
     this->update();
 }
@@ -541,6 +544,7 @@ void TaskMeasure::autoSaveChanged(bool checked)
     QSettings settings;
     settings.beginGroup(QLatin1String(taskMeasureSettingsGroup));
     settings.setValue(QLatin1String(taskMeasureAutoSaveSettingsName), mAutoSave);
+    settings.endGroup();
 }
 
 void TaskMeasure::newMeasurementBehaviourChanged(bool checked)
@@ -555,6 +559,7 @@ void TaskMeasure::newMeasurementBehaviourChanged(bool checked)
         Gui::Selection().setSelectionStyle(SelectionStyle::GreedySelection);
         settings.setValue(QLatin1String(taskMeasureGreedySelection), true);
     }
+    settings.endGroup();
 }
 
 void TaskMeasure::setModeSilent(App::MeasureType* mode)
